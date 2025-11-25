@@ -61,3 +61,25 @@ flowchart LR
 
     FE -->|REST API Calls| API
 ```
+
+## Dataflow
+
+```mermaid
+sequenceDiagram
+    participant App as Anwendung
+    participant Ingest as Log Ingestion API
+    participant Queue as Queue/Kafka
+    participant Proc as Log Processor
+    participant AI as KI Analyzer
+    participant DB as Meta-DB
+    participant Dash as Dashboard
+
+    App->>Ingest: POST /logs (JSON Log)
+    Ingest->>Queue: Log-Event
+    Queue->>Proc: Consume Event
+    Proc->>AI: Request embeddings + anomaly detection
+    AI-->>Proc: Anomaly score + label
+    Proc->>DB: Save log meta + anomaly info
+    Dash->>DB: Query anomalies + logs
+    DB-->>Dash: Results for visualization
+```
